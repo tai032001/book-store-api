@@ -37,15 +37,25 @@ namespace WebApplication2.Controllers
 
         //tao phuong thuc post them sach 
         [HttpPost]
+        [Route ("Add")]
         public async Task<ActionResult<List<Sach>>> AddSach(Sach sachPost)
         {
+            var SachTonTai = await context.sach.FirstOrDefaultAsync(i=>i.Id == sachPost.Id);
+            
+           // var Sach = context.sach.Add(sachPost);
+            if(SachTonTai != null ) {   
+
+                return BadRequest("Sach da ton tai");   
+            }
             context.sach.Add(sachPost);
             await context.SaveChangesAsync();
-            return Ok(await context.sach.ToListAsync());
+           // return Ok(await context.sach.ToListAsync());
+            return Ok(sachPost);
         }
 
         //tao phuong thuc Get 1 cuon sach
-        [HttpGet("{id}")]
+        [HttpGet("getBy/{id}")]
+        
         public async Task<ActionResult<Sach>> Get(int id)
         {
             var Sach= await context.sach.FindAsync(id);
@@ -56,6 +66,7 @@ namespace WebApplication2.Controllers
 
         //tao phuong thuc sua sach
         [HttpPut]
+        [Route ("Edit")]
         public async Task<ActionResult<List<Sach>>> EditSach(Sach request)
         {
               var dbSach= await context.sach.FindAsync(request.Id);
@@ -71,7 +82,7 @@ namespace WebApplication2.Controllers
             return Ok(dbSach);
         }
         //tao phuong thuc xoa 1 cuon sach
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         public async Task<ActionResult<List<Sach>>> Delete(int id)
         {
             var Sach = await context.sach.FindAsync(id);
